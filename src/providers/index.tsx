@@ -1,10 +1,12 @@
-import React, { ReactNode } from 'react'
+'use client'
 
-interface ProvidersProps {
+import React, { type ReactNode } from 'react'
+
+interface Props {
     children: ReactNode
 }
 
-const Providers = ({ children }: ProvidersProps) => {
+const Providers = ({ children }: Props) => {
     return <div>{children}</div>
 }
 
