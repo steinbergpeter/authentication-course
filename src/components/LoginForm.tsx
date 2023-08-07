@@ -29,7 +29,7 @@ export default function LoginForm() {
     return (
         <form
             onSubmit={(e) => handleSubmit(e)}
-            className="w-2/3 space-y-4 bg-slate-200 p-4"
+            className="w-3/4 space-y-4 bg-slate-200 p-4"
         >
             <div className="flex justify-between">
                 <label htmlFor="email">Email</label>
@@ -55,7 +55,7 @@ export default function LoginForm() {
             </div>
             <button
                 disabled={isDisabled}
-                className="mb-4 w-full rounded-lg border border-gray-300 bg-slate-800 p-2 text-white focus:border-gray-600 focus:outline-none disabled:bg-slate-50 disabled:text-slate-200"
+                className="mb-4 w-full rounded-lg border border-gray-300 bg-slate-800 p-2 text-white focus:border-gray-600 focus:outline-none disabled:bg-green-100 disabled:text-green-300"
             >
                 Sign Up
             </button>

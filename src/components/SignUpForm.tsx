@@ -4,33 +4,54 @@ import axios from 'axios'
 import Link from 'next/link'
 import { type ChangeEvent, type FormEvent, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import toast from 'react-hot-toast'
+import { signupSchema, type SignupInputValidator } from '@/lib/validators'
 
 export default function SignUpForm() {
-    const defaultUser = { email: '', password: '', username: '' }
+    const defaultUser = {
+        email: '',
+        password: '',
+        username: '',
+        confirmPassword: '',
+    }
     const [user, setUser] = useState(defaultUser)
+    const [isLoading, setIsLoading] = useState(false)
     const isDisabled = !user.email || !user.password || !user.username
     const router = useRouter()
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-        console.log('change: ', [e.target.id, e.target.value])
         setUser({ ...user, [e.target.id]: e.target.value })
-        console.log('user: ', user)
     }
+
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
+        setIsLoading(true)
+        if (user.password !== user.confirmPassword) {
+            toast.error('Passwords do not match')
+            return
+        }
         try {
-            const response = await axios.post('/api/auth/signup', user)
-            console.log(response)
-        } catch (error) {
-            console.log(error)
+            const res = await axios.post('/api/auth/signup', user)
+            const name = await res.data.savedUser.username
+            toast.success(`Welcome, ${name}, log in and get started!`)
+            router.push(`/login`)
+        } catch (error: any) {
+            toast.error(JSON.stringify(error.response))
+        } finally {
+            setIsLoading(false)
+            setUser(defaultUser)
         }
     }
 
     return (
         <form
-            onSubmit={(e) => handleSubmit(e)}
-            className="w-2/3 space-y-4 bg-slate-200 p-4"
+            onSubmit={handleSubmit}
+            className="w-3/4 space-y-4 bg-slate-200 p-4"
         >
+            <h1 className="w-full text-center text-2xl font-semibold text-black">
+                {isLoading ? 'Loading...' : 'Sign Up'}
+            </h1>
+            <hr />
             <div className="flex items-center justify-between">
                 <label htmlFor="username">Username</label>
                 <input
@@ -64,9 +85,21 @@ export default function SignUpForm() {
                     onChange={handleChange}
                 />
             </div>
+            <div className="flex justify-between">
+                <label htmlFor="confirmPassword">Confirm Password</label>
+                <input
+                    className="ml-4 w-80 rounded-sm px-2 py-1"
+                    id="confirmPassword"
+                    type="password"
+                    placeholder="confirmPassword"
+                    value={user.confirmPassword}
+                    onChange={handleChange}
+                />
+            </div>
             <button
+                type="submit"
                 disabled={isDisabled}
-                className="mb-4 w-full rounded-lg border border-gray-300 bg-slate-800 p-2 text-white focus:border-gray-600 focus:outline-none disabled:bg-slate-50 disabled:text-slate-200"
+                className="mb-4 w-full rounded-lg border border-gray-300 bg-slate-800 p-2 text-white focus:border-gray-600 focus:outline-none disabled:bg-green-100 disabled:text-green-300"
             >
                 Sign Up
             </button>

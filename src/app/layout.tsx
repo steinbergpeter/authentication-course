@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import Providers from '@/providers'
 import Fonts from '@/styles/fonts'
 import type { ReactNode } from 'react'
+import Header from '@/components/Header'
 
 export const metadata: Metadata = {
     title: 'Authenticaion Course',
@@ -17,7 +18,8 @@ interface Props {
 export default function RootLayout({ children }: Props) {
     return (
         <html lang="en">
-            <body className={`${Fonts} w-full bg-slate-100`}>
+            <body className={`${Fonts} absolute w-full bg-slate-100`}>
+                <Header />
                 <Providers>{children}</Providers>
             </body>
         </html>
