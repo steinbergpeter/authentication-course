@@ -1,13 +1,13 @@
-import { connect } from '@/lib/dbConfig'
+import { dbConnect } from '@/lib/dbConnect'
 import User from '@/models/userModel'
 import bcryptjs from 'bcryptjs'
 import { NextResponse, type NextRequest } from 'next/server'
 
-connect()
+dbConnect()
 
 export async function POST(req: NextRequest) {
     try {
-        const { username, email, password } = await req.json()
+        const { fullName, email, password } = await req.json()
         const emailIsUsed = !!(await User.findOne({ email }))
         if (emailIsUsed) {
             return NextResponse.json(
@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
         const salt = await bcryptjs.genSalt(10)
         const hashedPassword = await bcryptjs.hash(password, salt)
         const newUser = new User({
-            username,
+            fullName,
             email,
             password: hashedPassword,
         })

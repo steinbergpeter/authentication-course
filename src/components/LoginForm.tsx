@@ -1,75 +1,111 @@
 'use client'
 
+import { Button } from '@/components/ui/button'
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+
+import {
+    signupSchema,
+    type SignupInputValidator,
+    loginSchema,
+    type LoginInputValidator,
+} from '@/lib/validators'
+import { zodResolver } from '@hookform/resolvers/zod'
 import axios from 'axios'
 import Link from 'next/link'
-import { type ChangeEvent, type FormEvent, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { useForm } from 'react-hook-form'
+import toast from 'react-hot-toast'
 
 export default function LoginForm() {
-    const defaultUser = { email: '', password: '' }
-    const [user, setUser] = useState(defaultUser)
-    const isDisabled = !user.email || !user.password
     const router = useRouter()
 
-    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-        console.log('change: ', [e.target.id, e.target.value])
-        setUser({ ...user, [e.target.id]: e.target.value })
-        console.log('user: ', user)
-    }
-    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault()
-        try {
-            const response = await axios.post('/api/auth/login', user)
-            console.log(response)
-        } catch (error) {
-            console.log(error)
-        }
+    const form = useForm<LoginInputValidator>({
+        resolver: zodResolver(loginSchema),
+        defaultValues: {
+            email: '',
+            password: '',
+        },
+    })
+
+    const {
+        control,
+        handleSubmit,
+        formState: { isSubmitting, isValid },
+    } = form
+
+    const onSubmit = async (values: LoginInputValidator) => {
+        console.log(values)
     }
 
     return (
-        <form
-            onSubmit={(e) => handleSubmit(e)}
-            className="w-3/4 space-y-4 bg-slate-200 p-4"
-        >
-            <div className="flex justify-between">
-                <label htmlFor="email">Email</label>
-                <input
-                    className="ml-4 w-80 rounded-sm px-2 py-1"
-                    id="email"
-                    type="email"
-                    placeholder="email"
-                    value={user.email}
-                    onChange={handleChange}
-                />
-            </div>
-            <div className="flex justify-between">
-                <label htmlFor="password">Password</label>
-                <input
-                    className="ml-4 w-80 rounded-sm px-2 py-1"
-                    id="password"
-                    type="password"
-                    placeholder="password"
-                    value={user.password}
-                    onChange={handleChange}
-                />
-            </div>
-            <button
-                disabled={isDisabled}
-                className="mb-4 w-full rounded-lg border border-gray-300 bg-slate-800 p-2 text-white focus:border-gray-600 focus:outline-none disabled:bg-green-100 disabled:text-green-300"
+        <Form {...form}>
+            <form
+                onSubmit={handleSubmit(onSubmit)}
+                className="w-3/4 space-y-4 bg-slate-200 p-4"
             >
-                Sign Up
-            </button>
-            <div className="w-full">
-                <h1 className="text-center">
-                    {`Don\'t have an account yet? `}
-                    <Link
-                        className="text-blue-800 hover:text-blue-600"
-                        href="./signup"
-                    >
-                        Go to Sign Up
-                    </Link>
+                <h1 className="text-center text-xl font-semibold">
+                    {isSubmitting ? 'Submitting...' : 'Login'}
                 </h1>
-            </div>
-        </form>
+                <FormField
+                    control={control}
+                    name="email"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel htmlFor="email">Email</FormLabel>
+                            <FormControl>
+                                <Input {...field} placeholder="email" />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+
+                <FormField
+                    control={control}
+                    name="password"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel htmlFor="password">Password</FormLabel>
+                            <FormControl>
+                                <Input
+                                    {...field}
+                                    placeholder="password"
+                                    type="password"
+                                />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+
+                <Button
+                    type="submit"
+                    className="focus: w-full bg-green-800 text-white hover:bg-green-700 focus:bg-green-700 focus:ring-2 focus:ring-green-300 focus:ring-offset-2 focus:ring-offset-green-800 disabled:bg-slate-300"
+                    // disabled={!isValid || isSubmitting}
+                >
+                    Submit
+                </Button>
+
+                <div className="w-full">
+                    <h1 className="text-center">
+                        Need to set up an account?{' '}
+                        <Link
+                            className="text-blue-800 hover:text-blue-600"
+                            href="./signup"
+                        >
+                            Go to Sign Up
+                        </Link>
+                    </h1>
+                </div>
+            </form>
+        </Form>
     )
 }

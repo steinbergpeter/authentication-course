@@ -13,14 +13,18 @@ export const metadata: Metadata = {
 
 interface Props {
     children: ReactNode
+    authModals?: ReactNode
 }
 
-export default function RootLayout({ children }: Props) {
+export default function RootLayout({ children, authModals }: Props) {
     return (
         <html lang="en">
             <body className={`${Fonts} absolute w-full bg-slate-100`}>
-                <Header />
-                <Providers>{children}</Providers>
+                <Providers>
+                    {authModals}
+                    <Header />
+                    {children}
+                </Providers>
             </body>
         </html>
     )
