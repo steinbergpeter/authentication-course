@@ -11,8 +11,13 @@ export const signupSchema = z
         password: z
             .string()
             .min(1, 'Password is required')
+            .regex(
+                /^([a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]$/,
+                'Password must have at least one lowercase letter, one uppercase letter, one number, and one special charcter (@$!%*?&)'
+            )
             .min(8, 'Password must have more than 8 characters')
-            .max(20, 'Password must have less than 20 characters'),
+            .max(20, 'Password must have fewer than 20 characters'),
+
         confirmPassword: z.string().min(1, 'Confirm password is required'),
     })
     .refine((data) => data.password === data.confirmPassword, {
@@ -26,8 +31,8 @@ export const loginSchema = z.object({
     email: z.string().email(),
     password: z
         .string()
-        .min(5, 'Must be at least five characters')
-        .max(20, 'Twenty characters or less'),
+        .min(5, 'Password must have more than 8 characters')
+        .max(20, 'Password must have fewer than 20 characters'),
 })
 
 export type LoginInputValidator = z.infer<typeof loginSchema>

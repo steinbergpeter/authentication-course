@@ -18,12 +18,16 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
+import { suggestPassword } from '@/lib/passwordGenerator'
 
 export default function SignUpForm() {
+    //
     const router = useRouter()
 
     const form = useForm<SignupInputValidator>({
         resolver: zodResolver(signupSchema),
+        mode: 'onBlur',
+        progressive: true,
         defaultValues: {
             email: '',
             password: '',
@@ -50,11 +54,11 @@ export default function SignUpForm() {
     }
 
     return (
-        <Form {...form}>
-            <form
-                onSubmit={handleSubmit(onSubmit)}
-                className="mx-auto w-3/4 space-y-4 rounded-2xl bg-slate-100 p-4"
-            >
+        <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="mx-auto w-3/4 space-y-4 rounded-2xl bg-secondary p-4 text-secondary-foreground"
+        >
+            <Form {...form}>
                 <h1 className="text-center text-xl font-semibold">
                     {isSubmitting ? 'Submitting...' : 'Sign Up'}
                 </h1>
@@ -91,7 +95,18 @@ export default function SignUpForm() {
                     name="password"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel htmlFor="password">Password</FormLabel>
+                            <div className="flex items-center justify-between">
+                                <FormLabel htmlFor="password">
+                                    Password
+                                </FormLabel>
+                                <Button
+                                    onClick={suggestPassword}
+                                    type="button"
+                                    variant={'link'}
+                                >
+                                    Suggest Password
+                                </Button>
+                            </div>
                             <FormControl>
                                 <Input
                                     {...field}
@@ -126,8 +141,8 @@ export default function SignUpForm() {
 
                 <Button
                     type="submit"
-                    className="focus: w-full bg-green-800 text-white hover:bg-green-700 focus:bg-green-700 focus:ring-2 focus:ring-green-300 focus:ring-offset-2 focus:ring-offset-green-800 disabled:bg-slate-300"
-                    // disabled={!isValid || isSubmitting}
+                    className="focus: w-full bg-primary text-primary-foreground hover:bg-primary/50 focus:bg-green-700 focus:ring-2 focus:ring-green-300 focus:ring-offset-2 focus:ring-offset-green-800 disabled:bg-slate-300"
+                    disabled={!isValid || isSubmitting}
                 >
                     Submit
                 </Button>
@@ -143,7 +158,7 @@ export default function SignUpForm() {
                         </Link>
                     </h1>
                 </div>
-            </form>
-        </Form>
+            </Form>
+        </form>
     )
 }

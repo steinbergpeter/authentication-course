@@ -11,12 +11,7 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 
-import {
-    signupSchema,
-    type SignupInputValidator,
-    loginSchema,
-    type LoginInputValidator,
-} from '@/lib/validators'
+import { loginSchema, type LoginInputValidator } from '@/lib/validators'
 import { zodResolver } from '@hookform/resolvers/zod'
 import axios from 'axios'
 import Link from 'next/link'
@@ -29,6 +24,8 @@ export default function LoginForm() {
 
     const form = useForm<LoginInputValidator>({
         resolver: zodResolver(loginSchema),
+        mode: 'onBlur',
+        progressive: true,
         defaultValues: {
             email: '',
             password: '',
@@ -46,11 +43,11 @@ export default function LoginForm() {
     }
 
     return (
-        <Form {...form}>
-            <form
-                onSubmit={handleSubmit(onSubmit)}
-                className="w-3/4 space-y-4 bg-slate-200 p-4"
-            >
+        <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="w-3/4 space-y-4 rounded-2xl bg-secondary p-4 text-secondary-foreground"
+        >
+            <Form {...form}>
                 <h1 className="text-center text-xl font-semibold">
                     {isSubmitting ? 'Submitting...' : 'Login'}
                 </h1>
@@ -88,8 +85,8 @@ export default function LoginForm() {
 
                 <Button
                     type="submit"
-                    className="focus: w-full bg-green-800 text-white hover:bg-green-700 focus:bg-green-700 focus:ring-2 focus:ring-green-300 focus:ring-offset-2 focus:ring-offset-green-800 disabled:bg-slate-300"
-                    // disabled={!isValid || isSubmitting}
+                    className="w-full bg-primary text-primary-foreground hover:opacity-75 focus:ring-2 focus:ring-secondary focus:ring-offset-2  disabled:bg-slate-300"
+                    disabled={!isValid || isSubmitting}
                 >
                     Submit
                 </Button>
@@ -105,7 +102,7 @@ export default function LoginForm() {
                         </Link>
                     </h1>
                 </div>
-            </form>
-        </Form>
+            </Form>
+        </form>
     )
 }
