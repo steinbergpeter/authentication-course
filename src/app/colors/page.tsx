@@ -1,8 +1,8 @@
-export default function ColorsPage() {
+export default function Page() {
     return (
         <main className="grid h-screen grid-cols-4 gap-12 bg-background p-8 pt-32">
             <div className="h-35 w-35 grid items-center text-center text-2xl font-semibold">
-                Unspecified
+                default
             </div>
             <div className="h-35 w-35 grid items-center bg-background text-center text-2xl font-semibold text-foreground">
                 Back/Fore

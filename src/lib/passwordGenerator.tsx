@@ -9,41 +9,37 @@ export function generatePassword(length: number): string {
         'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@$!%*?&'
     let password: string = ''
     let attempts: number = 0
-
     while (attempts < 10) {
         for (let i: number = 0; i < length; i++) {
             password += characters.charAt(
                 Math.floor(Math.random() * characters.length)
             )
         }
-
         if (password.match(regexPattern)) {
             return password
         }
-
         password = ''
         attempts++
     }
-
     return 'Failed to generate a password, please try again.'
 }
 
 export const suggestPassword = () => {
-    let res = generatePassword(12)
-    const handleCopy = () => navigator.clipboard.writeText(res)
+    let genPass = generatePassword(12)
+    let useful = !genPass.split('').includes('Failed')
+    const handleCopy = () => navigator.clipboard.writeText(genPass)
     toast(() => (
         <span className="flex items-center justify-between gap-8">
-            {res}
+            {genPass}
             <Button
-                size="icon"
+                size="sm"
                 onClick={handleCopy}
                 variant="outline"
-                className="text-white"
+                className="background-accent text-white"
             >
-                copy
-                {/* <CopyCheck /> */}
+                {useful && <CopyCheck size={12} />}
             </Button>
         </span>
     ))
-    setTimeout(() => (res = ''), 5000)
+    setTimeout(() => (genPass = ''), 6000)
 }

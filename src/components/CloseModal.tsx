@@ -11,8 +11,8 @@ const CloseModal: FC = () => {
 
     return (
         <Button
-            variant="ghost"
-            className="h-6 w-6 rounded-md p-0"
+            variant="secondary"
+            className="absolute right-4 top-4 h-6 w-6 rounded-md p-0"
             aria-label="close sign-in modal"
             onClick={closeModal}
         >

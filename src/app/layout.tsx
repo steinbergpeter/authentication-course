@@ -6,7 +6,7 @@ import type { ReactNode } from 'react'
 import Header from '@/components/Header'
 
 export const metadata: Metadata = {
-    title: 'Authenticaion Course',
+    title: 'Authentication Course',
     description: 'Full featured authentication course',
     keywords:
         'authentication, course, react, nextjs, tailwindcss, shadcn, vegan, diet, plant-based, app',
@@ -20,7 +20,11 @@ interface Props {
 export default function RootLayout({ children, modals }: Props) {
     return (
         <html lang="en">
-            <body className={`${Fonts} absolute w-full bg-slate-100`}>
+            <body
+                id="bodybody"
+                className={`${Fonts} absolute w-full
+                bg-slate-100`}
+            >
                 <Providers>
                     {modals}
                     <Header />

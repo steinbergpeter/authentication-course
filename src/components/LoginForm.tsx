@@ -18,6 +18,8 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
+import FocusTrap from 'focus-trap-react'
+import CloseModal from './CloseModal'
 
 export default function LoginForm() {
     const router = useRouter()
@@ -42,67 +44,75 @@ export default function LoginForm() {
         console.log(values)
     }
 
+    const handleSwap = () => router.replace('/signup')
+
     return (
-        <form
-            onSubmit={handleSubmit(onSubmit)}
-            className="w-3/4 space-y-4 rounded-2xl bg-secondary p-4 text-secondary-foreground"
-        >
-            <Form {...form}>
-                <h1 className="text-center text-xl font-semibold">
-                    {isSubmitting ? 'Submitting...' : 'Login'}
-                </h1>
-                <FormField
-                    control={control}
-                    name="email"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel htmlFor="email">Email</FormLabel>
-                            <FormControl>
-                                <Input {...field} placeholder="email" />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-
-                <FormField
-                    control={control}
-                    name="password"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel htmlFor="password">Password</FormLabel>
-                            <FormControl>
-                                <Input
-                                    {...field}
-                                    placeholder="password"
-                                    type="password"
-                                />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-
-                <Button
-                    type="submit"
-                    className="w-full bg-primary text-primary-foreground hover:opacity-75 focus:ring-2 focus:ring-secondary focus:ring-offset-2  disabled:bg-slate-300"
-                    disabled={!isValid || isSubmitting}
-                >
-                    Submit
-                </Button>
-
-                <div className="w-full">
-                    <h1 className="text-center">
-                        Need to set up an account?{' '}
-                        <Link
-                            className="text-blue-800 hover:text-blue-600"
-                            href="./signup"
-                        >
-                            Go to Sign Up
-                        </Link>
+        <FocusTrap>
+            <form
+                onSubmit={handleSubmit(onSubmit)}
+                className="relative w-3/4 space-y-4 rounded-2xl bg-secondary p-4 text-secondary-foreground"
+            >
+                <CloseModal />
+                <Form {...form}>
+                    <h1 className="text-center text-xl font-semibold">
+                        {isSubmitting ? 'Submitting...' : 'Login'}
                     </h1>
-                </div>
-            </Form>
-        </form>
+                    <FormField
+                        control={control}
+                        name="email"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel htmlFor="email">Email</FormLabel>
+                                <FormControl>
+                                    <Input {...field} placeholder="email" />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+
+                    <FormField
+                        control={control}
+                        name="password"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel htmlFor="password">
+                                    Password
+                                </FormLabel>
+                                <FormControl>
+                                    <Input
+                                        {...field}
+                                        placeholder="password"
+                                        type="password"
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+
+                    <Button
+                        type="submit"
+                        className="w-full bg-primary text-primary-foreground hover:opacity-75 focus:ring-2 focus:ring-secondary focus:ring-offset-2  disabled:bg-slate-300"
+                        disabled={!isValid || isSubmitting}
+                    >
+                        Submit
+                    </Button>
+
+                    <div className="w-full">
+                        <h1 className="text-center">
+                            Need to set up an account?{' '}
+                            <Button
+                                variant="link"
+                                onClick={handleSwap}
+                                className="text-md"
+                            >
+                                Go to Sign Up
+                            </Button>
+                        </h1>
+                    </div>
+                </Form>
+            </form>
+        </FocusTrap>
     )
 }
