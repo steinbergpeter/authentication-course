@@ -28,14 +28,15 @@ export const suggestPassword = () => {
     let genPass = generatePassword(12)
     let useful = !genPass.split('').includes('Failed')
     const handleCopy = () => navigator.clipboard.writeText(genPass)
+
     toast(() => (
         <span className="flex items-center justify-between gap-8">
             {genPass}
             <Button
                 size="sm"
                 onClick={handleCopy}
-                variant="outline"
-                className="background-accent text-white"
+                variant="secondary"
+                className="background-accent z-10 text-white"
             >
                 {useful && <CopyCheck size={12} />}
             </Button>

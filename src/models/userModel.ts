@@ -1,6 +1,17 @@
 import mongoose from 'mongoose'
 
-const userSchema = new mongoose.Schema({
+export interface iUser {
+    fullName: string
+    email: string
+    password: string
+    isVerified: boolean
+    isAdmin: boolean
+    forgotPasswordToken: string
+    forgotPasswordTokenExpiry: Date
+    verifyToken: string
+    verifyTokenExpiry: Date
+}
+const userSchema = new mongoose.Schema<iUser>({
     fullName: {
         type: String,
         required: [true, 'Please enter a fullName'],
@@ -29,6 +40,6 @@ const userSchema = new mongoose.Schema({
     verifyTokenExpiry: Date,
 })
 
-const User = mongoose.models.users || mongoose.model('users', userSchema)
+const User = mongoose.models.users || mongoose.model<iUser>('users', userSchema)
 
 export default User

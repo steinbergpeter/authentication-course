@@ -45,9 +45,9 @@ export default function SignUpForm() {
         formState: { isSubmitting, isValid },
     } = form
 
-    const onSubmit = async (values: SignupInputValidator) => {
+    const onSubmit = async (formValues: SignupInputValidator) => {
         try {
-            const res = await axios.post('/api/auth/signup', values)
+            const res = await axios.post('/api/auth/signup', formValues)
             const name = await res.data.savedUser.fullName
             toast.success(`Welcome, ${name}, log in to get started!`)
             router.push(`/login`)
