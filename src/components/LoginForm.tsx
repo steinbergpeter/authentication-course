@@ -41,16 +41,16 @@ export default function LoginForm() {
     } = form
 
     const onSubmit = async (formValues: LoginInputValidator) => {
-        console.log('######### client side on submit called: ', formValues)
         try {
+            console.log('entered try block')
             const res = await axios.post('/api/auth/login', formValues)
             console.log('######### res: ', res)
-            // if (status === 200) {
+            // if (res.status === 201) {
             //     toast.success('Logged in successfully')
             //     router.replace('/')
             // } else {
-            //     throw new Error(data.error.message)
-            //     console.log(data.error.message)
+            //     console.log('/////message: ', res.data.error.message)
+            //     throw new Error(res.data.error.message)
             // }
             // router.push('/')
         } catch (error: any) {

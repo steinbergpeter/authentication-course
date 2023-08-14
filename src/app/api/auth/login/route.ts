@@ -4,12 +4,14 @@ import bcryptjs from 'bcryptjs'
 import { NextResponse, type NextRequest } from 'next/server'
 import jwt from 'jsonwebtoken'
 
-dbConnect()
+dbConnect().then(() => console.log('connected to db via logged in route'))
 
 export async function POST(req: NextRequest) {
-    console.log('########### login route called')
+    console.log('entered POST function on backend')
     try {
+        console.log('entered tryblock on backend')
         const { email, password } = await req.json()
+
         if (!email || !password) {
             return NextResponse.json(
                 {
@@ -23,9 +25,7 @@ export async function POST(req: NextRequest) {
         const user = await User.findOne({ email })
         if (!user) {
             return NextResponse.json(
-                {
-                    error: 'Either email or password is incorrect',
-                },
+                { error: 'Either email or password is incorrect' },
                 { status: 400 }
             )
         }
@@ -50,26 +50,38 @@ export async function POST(req: NextRequest) {
             expiresIn: '1h',
         })
 
-        console.log('***token: ', JSON.stringify(token))
+        console.log('------------- token: ', token)
 
-        const resData = JSON.stringify({
-            message: 'Login successful',
+        const responseBody = JSON.stringify({
             success: true,
+            message: 'Logged in successfully',
         })
 
-        console.log('***resData: ', resData)
+        console.log('------------- responseBody: ', responseBody)
 
-        const response = NextResponse.json(resData)
+        const response = NextResponse.json(responseBody, {
+            status: 201,
+            headers: { 'content-type': 'application/json' },
+        })
 
-        // console.log('***response: ', response)
+        console.log('------------- response: ', response)
 
-        // response.cookies.set('token', token, { httpOnly: true })
+        response.cookies.set({
+            name: 'token',
+            value: token,
+            httpOnly: true,
+        })
 
-        // return response
+        const cookieTest = response.cookies.get('token')
+
+        console.log('------------- cookieTest: ', cookieTest)
+        return response
     } catch (err) {
         if (err instanceof Error) {
-            const data = JSON.stringify({ error: err.message, success: false })
-            return new NextResponse(data, { status: 500 })
+            return new NextResponse(
+                JSON.stringify({ error: err.message, success: false }),
+                { status: 500, headers: { 'content-type': 'application/json' } }
+            )
         }
     }
 }
