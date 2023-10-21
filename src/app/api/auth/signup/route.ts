@@ -1,58 +1,56 @@
 import { dbConnect } from '@/lib/dbConnect'
 import User from '@/models/userModel'
+import { NextRequest, NextResponse } from 'next/server'
 import bcryptjs from 'bcryptjs'
-import { CONFIG_FILES } from 'next/dist/shared/lib/constants'
-import { NextResponse, NextRequest } from 'next/server'
+// import { sendEmail } from '@/helpers/mailer'
+import { SignupInputValidator } from '@/lib/validators'
+dbConnect()
 
-dbConnect().then(() => console.log('connected to db via signup route'))
-
-export async function POST(req: NextRequest) {
-    console.log('entered signup POST function on backend')
+export async function POST(request: NextRequest) {
     try {
-        console.log('entered Signup tryblock on backend')
-        const { fullName, email, password } = await req.json()
-        console.log({ fullName, email, password })
-        // Check if email already exists
-        const isEmailAlreadyUsed = !!(await User.findOne({ email }))
-        console.log({ isEmailAlreadyUsed })
-        if (isEmailAlreadyUsed) {
+        const reqBody: SignupInputValidator = await request.json()
+        const { fullName, email, password } = reqBody
+        //check if user already exists
+        const user = await User.findOne({ email })
+
+        if (user) {
             return NextResponse.json(
-                JSON.stringify({
-                    error: 'User with that email already exists',
-                }),
+                { error: 'User already exists' },
                 { status: 400 }
             )
         }
 
-        // Hash password
+        //hash password
         const salt = await bcryptjs.genSalt(10)
         const hashedPassword = await bcryptjs.hash(password, salt)
-        const newUser = await new User({
-            fullName,
+        console.log('>>>>>> fullName: ', fullName)
+
+        const newUser = new User({
             email,
+            fullName,
             password: hashedPassword,
         })
-        console.log({ newUser })
-        const finalUser = await User.create(newUser)
-        console.log({ finalUser })
+
+        console.log('newUser: ', newUser)
+
+        const savedUser = await newUser.save().catch((err: Error) => {
+            console.log('err: ', err)
+        })
+
+        console.log('savedUser: ', savedUser)
+
+        return
         //send verification email
+
         // await sendEmail({ email, emailType: 'VERIFY', userId: savedUser._id })
-        // const savedUser = await newUser.save()
-        // console.log({ savedUser })
-        // return new NextResponse(
-        //     JSON.stringify({
-        //         message: 'User created successfully',
-        //         success: true,
-        //         savedUser,
-        //     }),
-        //     { status: 201 }
-        // )
-    } catch (err) {
-        if (err instanceof Error) {
-            return new NextResponse(
-                JSON.stringify({ error: err.message, success: false }),
-                { status: 500 }
-            )
-        }
+
+        // return NextResponse.json({
+        //     message: 'User created successfully',
+        //     success: true,
+        //     savedUser,
+        // })
+    } catch (error: any) {
+        return
+        // return NextResponse.json({ error: error.message }, { status: 500 })
     }
 }

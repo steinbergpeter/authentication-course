@@ -26,9 +26,9 @@ export default function SignUpForm() {
     const router = useRouter()
 
     const defaultValues = {
+        fullName: '',
         email: '',
         password: '',
-        fullName: '',
         confirmPassword: '',
     }
 
